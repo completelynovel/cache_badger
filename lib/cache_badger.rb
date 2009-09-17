@@ -1,1 +1,1 @@
-# CacheBadger
+require 'cache_badger/view'
