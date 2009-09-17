@@ -69,7 +69,7 @@ module CacheBadger # :nodoc:
         unless @cache_key
           @cache_key  = "[#{@single_keys.join(":")}]"
           @cache_key += @key_pairs.collect { |key, value| "[#{key}:#{value.to_s}]" }.join
-          @cache_key  = Digest::MD5.hexdigest(cache_key) if @plain_key != true
+          @cache_key  = @plain_key == true ? @cache_key.gsub(" ", "+") : Digest::MD5.hexdigest(@cache_key)
         end
         @cache_key
       end
