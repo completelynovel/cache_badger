@@ -2,8 +2,9 @@ module CacheBadger # :nodoc:
   module View # :nodoc:
     
     def cache_badger(options = {}, &block)
-      options[:global]    = false if options[:global].nil?
-      options[:plain_key] = false if options[:plain_key].nil?
+      options[:global]       = false if options[:global].nil?
+      options[:plain_key]    = false if options[:plain_key].nil?
+      options[:expires_in] ||= 3.minutes
       
       fragment = Fragment.new(controller)
       
@@ -14,7 +15,7 @@ module CacheBadger # :nodoc:
       
       if ActionController::Base.cache_configured?
         RAILS_DEFAULT_LOGGER.warn("Your cache key is #{fragment.cache_key.size} characters long, it will be being truncated") if fragment.cache_key.size > 255
-        Rails.cache.fetch(fragment.cache_key) do
+        Rails.cache.fetch(fragment.cache_key, :expires_in => options[:expires_in]) do
           capture(&fragment.html)
         end
       else
